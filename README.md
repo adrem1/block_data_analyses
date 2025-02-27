@@ -23,7 +23,9 @@ if you find my presentations confusing.
 
 ## About the analyses
 The results of the analyses are presented with commentary on the Cardano Forum:
+
 [LINK](link)
+
 I encourage interested people to: 
 - re-run these analyses, to verify them
 - provide code to run them in different languages (eg Python)
