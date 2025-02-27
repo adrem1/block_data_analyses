@@ -8,9 +8,7 @@ In this repo you will find:
 
 ## General considerations
 i. In the R scripts provided the directory structure expected will be the following:
-
-<YOUR-WORKING-DIRECTORY/data/DATAFILES>
-
+'<YOUR-WORKING-DIRECTORY/data/DATAFILES>'
 This can be modified if not suitable, but data import instructions will need to reflect the changes.
 
 ii. The data provided in the links are there to save people time and avoid putting unneccessary pressure 
