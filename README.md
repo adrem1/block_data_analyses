@@ -8,18 +8,21 @@ In this repo you will find:
 
 ## General considerations
 i. The queries used to fetch all required datasets are provided here for independent 
-data generation or checking. Most of the Koios queries are well within the free tier daily limits for Koios,
-but the stake data are not and will have to be pulled over multiple days (to saty within free tier limits.
+data generation or checking. Most of the Koios queries are well within the free tier daily limits for Koios.
 
-ii. In the R scripts provided the expected directory structure is the following:
+ii. In every analysis folder you'll find all queries and scripts needed for it.
+Koios queries should be run first, to fetch data from Cardano. Then you can 
+proceed with the analyses (either your own, or following mine).
+
+iii. In the R scripts provided the expected directory structure is the following:
 
 > YOUR-WORKING-DIRECTORY/data/DATAFILES
 
 This can be modified if not suitable, but data import instructions will need to reflect the changes.
 
-iii. I have conducted several separate analyses, and organised the required files accordingly.
+iv. I have conducted several separate analyses, and organised the required files accordingly.
 For those interested in replicating or modifying these analyses, please don't hesitate to ask 
-if you find my presentations confusing.
+if you find how I organised this repo confusing.
 
 ## About the analyses
 The results of the analyses are presented with commentary on the Cardano Forum:
