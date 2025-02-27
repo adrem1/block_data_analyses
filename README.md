@@ -1,15 +1,16 @@
 # Cardano block data analyses
-A collection of Koios queries, R scripts and Cardano data for analysis
+A collection of Koios queries and R scripts to analyse Cardano block data.
 
 ## Start here
 In this repo you will find: 
 - bash scripts to automate Koios queries used to pull required data 
 - R scripts to replicate my analyses or modify them to ask different questions
-- A collection of links pointing to all data used in my analyses
 
 ## General considerations
 i. In the R scripts provided the directory structure expected will be the following:
+
 <YOUR-WORKING-DIRECTORY/data/DATAFILES>
+
 This can be modified if not suitable, but data import instructions will need to reflect the changes.
 
 ii. The data provided in the links are there to save people time and avoid putting unneccessary pressure 
