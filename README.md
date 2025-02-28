@@ -27,7 +27,7 @@ if you find how I organised this repo confusing.
 ## About the analyses
 The results of the analyses are presented with commentary on the Cardano Forum:
 
-[LINK](link)
+[Decentralisation Matters](https://forum.cardano.org/t/decentralisation-matters/143603)
 
 I encourage interested people to: 
 - re-run these analyses, to verify them
