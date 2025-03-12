@@ -5,7 +5,7 @@
 ###################################################
 
 # set the work dir
-setwd("C:/Users/punct/OneDrive/Desktop/R-projects/epoch_block_analysis")
+setwd("path-to-your-working-directory") #edit with Working Directory Path
 
 # Load necessary libraries
 library(dplyr)
