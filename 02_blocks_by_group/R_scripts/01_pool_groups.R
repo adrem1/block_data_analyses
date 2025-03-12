@@ -5,7 +5,7 @@
 ###################################################
 
 # set the work dir
-setwd("path-to-your-working-directory") # edit with Working Directory path
+setwd("C:/Users/punct/OneDrive/Desktop/R-projects/epoch_block_analysis")
 
 # Load necessary libraries
 library(dplyr)
@@ -341,6 +341,73 @@ ggplot(blockProportionsSummary, aes(x = epoch_no, y = proportion, color = group_
   )
 
 #########################################################
+# Area plot of block proportions
+# Single Pools vs. All Other Groups
+#########################################################
+
+# Step 1: Reclassify groups into two categories
+blockProportionsSummary <- blockProportions %>%
+  filter(!is.na(group_category)) %>%  # Remove NA values
+  mutate(group_category = ifelse(group_category == "Single Pools", "Single Pools", "Pool Groups")) %>%
+  group_by(epoch_no, group_category) %>%
+  summarise(blocks_minted = n(), .groups = "drop") %>%
+  group_by(epoch_no) %>%
+  mutate(proportion = blocks_minted / sum(blocks_minted)) %>%
+  ungroup()
+
+# Define custom colors
+group_colors <- c(
+  "Single Pools" = "#FF00FF",  # Magenta
+  "Pool Groups" = "#4B0082"     # Dark Purple
+)
+
+# Convert group_category to factor to maintain order
+blockProportionsSummary$group_category <- factor(
+  blockProportionsSummary$group_category, 
+  levels = c("Pool Groups", "Single Pools")  # Ensure stacked order
+)
+
+# Create the area plot
+ggplot(blockProportionsSummary, aes(x = epoch_no, y = proportion, fill = group_category)) +
+  geom_area(position = "stack", alpha = 0.8) +  # Stacked area plot
+  scale_fill_manual(values = group_colors) +  # Apply custom colors
+  labs(title = "Single Pools vs. Pool Groups Over Epochs",
+       x = "Epoch",
+       y = "Proportion of Blocks Minted",
+       fill = "Pool Category") +
+  theme_minimal(base_size = 14) +  # Clean theme
+  theme(
+    plot.background = element_rect(fill = "black", color = NA),  # Black background
+    panel.background = element_rect(fill = "black", color = NA),  # Black panel
+    panel.grid.major = element_blank(),  # Remove major gridlines
+    panel.grid.minor = element_blank(),  # Remove minor gridlines
+    panel.grid.major.x = element_blank(),  # Remove vertical gridlines
+    panel.grid.minor.x = element_blank(),  # Remove minor vertical gridlines
+    axis.text = element_text(color = "white"),  # White axis labels
+    axis.title = element_text(color = "white"),  # White axis titles
+    plot.title = element_text(color = "white", face = "bold"),  # White plot title
+    legend.background = element_rect(fill = "black"),  # Black legend background
+    legend.text = element_text(color = "white"),  # White legend text
+    legend.title = element_text(color = "white"),  # White legend title
+    panel.border = element_blank(),  # Remove any extra borders
+    axis.ticks = element_blank()  # Remove axis ticks
+  )
+
+# Compute min, max, and avg proportions per group category
+group_stats <- blockProportionsSummary %>%
+  group_by(group_category) %>%
+  summarise(
+    min_proportion = min(proportion),
+    max_proportion = max(proportion),
+    avg_proportion = mean(proportion),
+    .groups = "drop"
+  )
+
+# Print the stats
+group_stats
+
+
+#########################################################
 # WEIGHTED (by number of pools) blocks produced 
 # by pool groups including single pools 
 #########################################################
@@ -632,6 +699,5 @@ stability_groups_plot <- ggplot() +
 
 # Arrange the plots in a 2x2 grid
 grid.arrange(longevity_pools_plot, stability_pools_plot, longevity_groups_plot, stability_groups_plot, ncol = 2)
-
 
 
