@@ -502,7 +502,7 @@ min_pools_50 <- pool_block_counts %>%
   mutate(cumulative_blocks = cumsum(blocks_minted)) %>%  # Compute cumulative sum of blocks
   left_join(epoch_block_counts, by = "epoch_no") %>%  # Add total blocks per epoch
   mutate(threshold = (total_blocks / 2) + 1) %>%  # Calculate 50% + 1 threshold
-  filter(cumulative_blocks >= threshold) %>%  # Find first row where cumulative blocks exceed threshold
+  filter(cumulative_blocks < threshold | row_number() == min(which(cumulative_blocks >= threshold))) %>%  # Keep all leading rows plus the first that meets/exceeds the threshold
   summarise(min_pools_needed = n(), .groups = "drop")  # Count pools needed
 
 #########################################################
@@ -528,7 +528,7 @@ min_groups_50 <- group_block_counts %>%
   mutate(cumulative_blocks = cumsum(blocks_minted)) %>%  # Compute cumulative blocks
   left_join(epoch_block_counts, by = "epoch_no") %>%  # Add total blocks per epoch
   mutate(threshold = (total_blocks / 2) + 1) %>%  # Compute 50% +1 threshold
-  filter(cumulative_blocks >= threshold) %>%  # Keep only rows where cumulative blocks exceed threshold
+  filter(cumulative_blocks < threshold | row_number() == min(which(cumulative_blocks >= threshold))) %>%  # Keep all leading rows plus the first that meets/exceeds the threshold
   summarise(min_groups_needed = n(), .groups = "drop")  # Count the number of groups needed
 
 #########################################################
@@ -554,29 +554,8 @@ ggplot(min_pools_vs_groups_long, aes(x = epoch_no, y = Value, color = Metric)) +
   facet_wrap(~ Metric, ncol = 1, scales = "free_y") +  # Separate panels for each metric
   scale_color_manual(values = c("Minimum Pools" = "magenta", "Minimum Groups" = "purple")) +
   labs(title = "Minimum Entities Needed for 50%+1 Blocks",
-       x = "Epoch",
-       y = "Minimum Required") +
-  theme_minimal(base_size = 14) +
-  theme(
-    panel.background = element_rect(fill = "black", color = "black"),
-    plot.background = element_rect(fill = "black", color = "black"),
-    panel.grid.major = element_line(color = "gray30"),
-    panel.grid.minor = element_line(color = "gray20"),
-    axis.text = element_text(color = "white"),
-    axis.title = element_text(color = "white"),
-    plot.title = element_text(color = "white", face = "bold"),
-    strip.background = element_rect(fill = "black"),
-    strip.text = element_text(color = "white", face = "bold"),
-    legend.position = "none"
-  )
-
-ggplot(min_pools_vs_groups_long, aes(x = epoch_no, y = Value, color = Metric)) +
-  geom_line(size = 1.2) +
-  facet_wrap(~ Metric, ncol = 1, scales = "free_y") +  # Separate panels for each metric
-  scale_color_manual(values = c("Minimum Pools" = "magenta", "Minimum Groups" = "purple")) +
-  labs(title = "Minimum Entities Needed for 50%+1 Blocks",
-       x = NULL,  # Remove x-axis label
-       y = NULL) + # Remove y-axis label
+       x = "Epoch",  #  x-axis label
+       y = "Minimum Required") + #  y-axis label
   geom_vline(xintercept = 257, linetype = "dashed", color = "white", size = 1) +  # Add dashed line at epoch 257
   theme_minimal(base_size = 14) +
   theme(
@@ -592,6 +571,41 @@ ggplot(min_pools_vs_groups_long, aes(x = epoch_no, y = Value, color = Metric)) +
     strip.text = element_text(color = "white", face = "bold"),
     legend.position = "none"
   )
+
+#########################################################
+# compute summary stats
+# for minimum entities needed for 50% +1
+# epochs prior to 257 are excluded as d>0 
+#########################################################
+
+# Filter data for epochs 257 and beyond
+min_pools_filtered <- min_pools_50 %>% filter(epoch_no >= 257)
+min_groups_filtered <- min_groups_50 %>% filter(epoch_no >= 257)
+
+# Compute statistics for min_pools_50
+min_pools_stats <- min_pools_filtered %>%
+  summarise(
+    max_pools = max(min_pools_needed, na.rm = TRUE),
+    max_epoch_pools = epoch_no[which.max(min_pools_needed)],
+    min_pools = min(min_pools_needed, na.rm = TRUE),
+    min_epoch_pools = epoch_no[which.min(min_pools_needed)],
+    avg_pools = mean(min_pools_needed, na.rm = TRUE)
+  )
+
+# Compute statistics for min_groups_50
+min_groups_stats <- min_groups_filtered %>%
+  summarise(
+    max_groups = max(min_groups_needed, na.rm = TRUE),
+    max_epoch_groups = epoch_no[which.max(min_groups_needed)],
+    min_groups = min(min_groups_needed, na.rm = TRUE),
+    min_epoch_groups = epoch_no[which.min(min_groups_needed)],
+    avg_groups = mean(min_groups_needed, na.rm = TRUE)
+  )
+
+# Print results
+print(min_pools_stats)
+print(min_groups_stats)
+
 #########################################################
 # longevity/stability of pools/groups
 #########################################################
