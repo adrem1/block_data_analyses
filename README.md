@@ -35,4 +35,4 @@ I encourage interested people to:
 - ask their own questions
 
 ## Acknowledgements
-I wish to thank Rich [ECP] and Wayne [OTG] for providing valuable insights during this work.
+I wish to thank Rich [ECP], Homer [AAA] and Wayne [OTG] for providing valuable insights during this work.
